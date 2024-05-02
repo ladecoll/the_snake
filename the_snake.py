@@ -49,6 +49,7 @@ class GameObject:
     """
 
     position = ((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))
+
     # Положение объекта на экране по умолчанию
 
     def __init__(self, position, body_color):
@@ -104,13 +105,15 @@ class Snake(GameObject):
     next_direction = None
     # Направление движения в следующей итерации основного цикла
     positions = [GameObject.position]
+
     # Cписок позиций сегментов змейки
 
     def __init__(self):
         """Создает объект Snake с заданным цветом"""
         for position in self.positions:
             super().__init__(self.position, self.body_color)
-            # Передает позицию и заданный цвет в инициализатор родительского класса
+            # Передает позицию и заданный цвет
+            # в инициализатор родительского класса
         self.last = None
 
     def get_head_position(self):
@@ -162,6 +165,23 @@ class Snake(GameObject):
         screen.fill(BOARD_BACKGROUND_COLOR)  # Стирает тело змейки с экрана
 
 
+def make_events(events, snake):
+    """Обрабатывает действия пользователя"""
+    for event in events:
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP and snake.direction != DOWN:
+                snake.next_direction = UP
+            elif event.key == pygame.K_DOWN and snake.direction != UP:
+                snake.next_direction = DOWN
+            elif event.key == pygame.K_LEFT and snake.direction != RIGHT:
+                snake.next_direction = LEFT
+            elif event.key == pygame.K_RIGHT and snake.direction != LEFT:
+                snake.next_direction = RIGHT
+
+
 def main():
     """Основная функция."""
     pygame.init()
@@ -175,21 +195,9 @@ def main():
             generate_new_apple_position()
             # Повторяет пока позиция совпадает с позицией сегмента змейки.
 
-    while True:
+    while True:  # Основной цикл
         clock.tick(SPEED)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP and snake.direction != DOWN:
-                    snake.next_direction = UP
-                elif event.key == pygame.K_DOWN and snake.direction != UP:
-                    snake.next_direction = DOWN
-                elif event.key == pygame.K_LEFT and snake.direction != RIGHT:
-                    snake.next_direction = LEFT
-                elif event.key == pygame.K_RIGHT and snake.direction != LEFT:
-                    snake.next_direction = RIGHT
+        make_events(pygame.event.get(), snake)
         snake.move()
         if snake.get_head_position() == apple.position:
             generate_new_apple_position()
