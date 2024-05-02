@@ -44,15 +44,13 @@ clock = pygame.time.Clock()
 class GameObject:
     """Родительский класс игровых объектов.
 
-    Атрибут body_color задается при инициализации
-    объектов дочерних классов и не определен заранее
+    Цвет body_color определяется в дочерних объектах
     """
 
     position = ((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))
-
     # Положение объекта на экране по умолчанию
 
-    def __init__(self, position, body_color):
+    def __init__(self, position=None, body_color=None):
         """Используется только при инициализации объектов дочерних классов."""
         self.position = position
         self.body_color = body_color
@@ -165,7 +163,7 @@ class Snake(GameObject):
         screen.fill(BOARD_BACKGROUND_COLOR)  # Стирает тело змейки с экрана
 
 
-def make_events(events, snake):
+def handle_keys(events, snake):
     """Обрабатывает действия пользователя"""
     for event in events:
         if event.type == pygame.QUIT:
@@ -197,7 +195,7 @@ def main():
 
     while True:  # Основной цикл
         clock.tick(SPEED)
-        make_events(pygame.event.get(), snake)
+        handle_keys(pygame.event.get(), snake)
         snake.move()
         if snake.get_head_position() == apple.position:
             generate_new_apple_position()
