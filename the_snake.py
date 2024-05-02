@@ -48,6 +48,9 @@ class GameObject:
         self.position = position
         self.body_color = body_color
 
+    def draw(self):
+        pass
+
 
 class Apple(GameObject):
     body_color = APPLE_COLOR
@@ -123,11 +126,15 @@ class Snake(GameObject):
 
 
 def main():
-    # Инициализация PyGame:
     pygame.init()
-    # Тут нужно создать экземпляры классов.
     apple = Apple()
     snake = Snake()
+
+    def generate_new_apple_position():
+        '''Это функция'''
+        apple.randomize_position()
+        if apple.position in snake.positions:
+            generate_new_apple_position()
 
     while True:
         '''
@@ -155,14 +162,17 @@ def main():
         snake.update_direction()
         snake.move()
         if snake.get_head_position() == apple.position:
-            apple.randomize_position()
+            generate_new_apple_position()
             snake.positions.append(snake.last)
             snake.length += 1
-        for position in snake.positions[1:]:
+            print(f'length = {snake.length}, фактическая длина = {len(snake.positions)}')
+        '''for position in snake.positions[1:]:
             #if position == apple.position:
                 #apple.randomize_position() - проверка выполняется 1 раз, если яблоко снова сгенерируется внутри змейки то так и будет
             if position == snake.get_head_position():
-                snake.reset()
+                snake.reset()'''
+        if snake.get_head_position() in snake.positions[1:]:
+            snake.reset()
         snake.draw()
         apple.draw()
         pygame.display.update()
