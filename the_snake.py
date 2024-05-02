@@ -45,8 +45,11 @@ class GameObject:
     """Родительский класс игровых объектов.
 
     Атрибут body_color задается при инициализации
-    объектов дочерних классов и не определен заранее"""
-    position = ((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))  # Положение объекта на экране по умолчанию
+    объектов дочерних классов и не определен заранее
+    """
+
+    position = ((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))
+    # Положение объекта на экране по умолчанию
 
     def __init__(self, position, body_color):
         """Используется только при инициализации объектов дочерних классов."""
@@ -57,25 +60,30 @@ class GameObject:
         """Отрисовывает переданный экземпляр дочернего класса."""
         pygame.draw.rect(screen, self.body_color, rect)
         pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
-        # Использует цвет из дочернего класса, поскольку атрибут цвета уникален для каждого дочернего класса.
+        # Использует цвет из дочернего класса,
+        # поскольку атрибут цвета уникален для каждого дочернего класса.
 
 
 class Apple(GameObject):
     """Дочерний класс Gameobject.
 
-    Атрибут position определяет позицию объекта и не определен заранее."""
+    Атрибут position определяет позицию объекта и не определен заранее.
+    """
+
     body_color = APPLE_COLOR  # Цвет объекта
 
     def __init__(self):
         """Создает объект Apple с случайной позицией и заданным цветом"""
         self.randomize_position()
         super().__init__(self.position, self.body_color)
-        # Передает сгенерированные координаты и заданный цвет в инициализатор родительского класса
+        # Передает сгенерированные координаты
+        # и заданный цвет в инициализатор родительского класса
 
     def draw_apple(self):
         """Отрисовывет объект Apple."""
         rect = pygame.Rect(self.position, (GRID_SIZE, GRID_SIZE))
-        # Созает квадрат pygame при помощи position, передает в метод draw родительского класса
+        # Созает квадрат pygame при помощи position,
+        # передает в метод draw родительского класса
         super().draw(rect)
 
     def randomize_position(self):
@@ -88,16 +96,21 @@ class Apple(GameObject):
 class Snake(GameObject):
     """Дочерний класс Gameobject.
 
-    Атрибут last определяет последний сегмент змейки и не определен заранее"""
+    Атрибут last определяет последний сегмент змейки и не определен заранее
+    """
+
     body_color = SNAKE_COLOR  # Цвет объекта
     direction = RIGHT  # Yаправление движения
-    next_direction = None  # Направление движения в следующей итерации основного цикла
-    positions = [GameObject.position]  # Cписок позиций сегментов змейки
+    next_direction = None
+    # Направление движения в следующей итерации основного цикла
+    positions = [GameObject.position]
+    # Cписок позиций сегментов змейки
 
     def __init__(self):
         """Создает объект Snake с заданным цветом"""
         for position in self.positions:
-            super().__init__(self.position, self.body_color)  # Передает позицию и заданный цвет в инициализатор родительского класса
+            super().__init__(self.position, self.body_color)
+            # Передает позицию и заданный цвет в инициализатор родительского класса
         self.last = None
 
     def get_head_position(self):
@@ -105,10 +118,10 @@ class Snake(GameObject):
         return self.positions[0]
 
     def move(self):
-        """Добавляет элемент в начало списка positions и удаляет элемент в конце."""
+        """Добавляет элемент в начало positions и удаляет элемент в конце."""
         new_x = self.get_head_position()[0] + self.direction[0] * GRID_SIZE
         new_y = self.get_head_position()[1] + self.direction[1] * GRID_SIZE
-        # Вычисляет новую позицию головы из текущей и текущего направления движения.
+        # Вычисляет новую позицию головы из текущей и направления движения.
         if new_x == 640:
             new_x = 0
         elif new_x < 0:
@@ -125,9 +138,11 @@ class Snake(GameObject):
 
     def draw_snake(self):
         """Рисует объект Snake."""
-        for position in self.positions:  # Цикл перебирает позиции сегментов змейки
+        for position in self.positions:
+            # Цикл перебирает позиции сегментов змейки
             rect = (pygame.Rect(position, (GRID_SIZE, GRID_SIZE)))
-            super().draw(rect)  # Каждая позиция передается в  метод draw родительского класса
+            super().draw(rect)
+            # Каждая позиция передается в  метод draw родительского класса
         if self.last:  # Стирает последний сегмент змейки
             last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
             pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
@@ -141,12 +156,14 @@ class Snake(GameObject):
     def reset(self):
         """Сбрасывает змейку после проигрыша"""
         self.positions = [GameObject.position]  # Позиция объекта по умолчанию
-        self.direction = choice([UP, DOWN, LEFT, RIGHT])  # Случайное направление движения
+        self.direction = choice([UP, DOWN, LEFT, RIGHT])
+        # Случайное направление движения
         self.next_direction = None
         screen.fill(BOARD_BACKGROUND_COLOR)  # Стирает тело змейки с экрана
 
 
 def main():
+    """Основная функция."""
     pygame.init()
     apple = Apple()
     snake = Snake()
@@ -155,7 +172,8 @@ def main():
         """Запускает генерацию позиции яблока."""
         apple.randomize_position()
         if apple.position in snake.positions:
-            generate_new_apple_position()  # Повторяет пока позиция совпадает с позицией сегмента змейки.
+            generate_new_apple_position()
+            # Повторяет пока позиция совпадает с позицией сегмента змейки.
 
     while True:
         clock.tick(SPEED)
