@@ -92,6 +92,8 @@ class Snake(GameObject):
     """Дочерний класс Gameobject.
 
     Атрибут last задает последний сегмент змейки и не определен заранее
+    В коде не используются методы get_head_position и update_direction,
+    однако оставлены в ходе из-за требований тестов.
     """
 
     direction = RIGHT  # Направление движения
@@ -131,6 +133,12 @@ class Snake(GameObject):
         self.direction = choice([UP, DOWN, LEFT, RIGHT])
         # Случайное направление движения
         screen.fill(BOARD_BACKGROUND_COLOR)  # Стирает тело змейки с экрана
+
+    def get_head_position(self):
+        return self.positions[0]
+
+    def update_direction(self, new_direction):
+        self.direction = new_direction
 
 
 def handle_keys(events, snake):
