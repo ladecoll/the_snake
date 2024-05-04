@@ -61,8 +61,6 @@ class GameObject:
         rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(screen, body_color, rect)
         pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
-        # Использует цвет из дочернего класса,
-        # поскольку атрибут цвета уникален для каждого дочернего класса.
 
 
 class Apple(GameObject):
@@ -95,9 +93,7 @@ class Snake(GameObject):
     Атрибут last определяет последний сегмент змейки и не определен заранее
     """
 
-    direction = RIGHT  # Yаправление движения
-    next_direction = None
-    # Направление движения в следующей итерации основного цикла
+    direction = RIGHT  # Направление движения
     positions = [SNAKE_POSITION]
     # Cписок позиций сегментов змейки
 
@@ -108,40 +104,29 @@ class Snake(GameObject):
         # в инициализатор родительского класса
         self.last = None
 
-    def move(self):
+    def move(self, new_direction=None):
         """Добавляет элемент в начало positions и удаляет элемент в конце."""
-        new_x = self.positions[0][0] + self.direction[0] * GRID_SIZE
-        new_y = self.positions[0][1] + self.direction[1] * GRID_SIZE
+        new_head_x = (self.positions[0][0] + self.direction[0] * GRID_SIZE) % SCREEN_WIDTH
+        new_head_y = (self.positions[0][1] + self.direction[1] * GRID_SIZE) % SCREEN_HEIGHT
+        self.positions.insert(0, (new_head_x, new_head_y))
         # Вычисляет новую позицию головы из текущей и направления движения.
-        if new_x == 640:
-            new_x = 0
-        elif new_x < 0:
-            new_x = 640
-        if new_y == 480:
-            new_y = 0
-        elif new_y < 0:
-            new_y = 480
-        # Если задет край экрана, перемещает в противоположную сторону.
-        new_head = (new_x, new_y)
-        self.positions.insert(0, (new_x, new_y))
         self.last = self.positions.pop(-1)
         # Перемещает последний сегмент в атрибут last.
-        if self.next_direction:
-            self.direction = self.next_direction
-            self.next_direction = None
+        if new_direction:
+            self.direction = new_direction
+        # Задает новое направление движения если оно было введено.
 
     def draw_snake(self):
-        """Рисует объект Snake."""
+        """Рисует голову змейки и стирает кончик хвоста."""
         super().draw(self.positions[0], SNAKE_COLOR)
-        last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
-        pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
+        pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR,
+                         pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE)))
 
     def reset(self):
-        """Сбрасывает змейку после проигрыша"""
+        """Сбрасывает змейку после проигрыша."""
         self.positions = [SNAKE_POSITION]  # Позиция объекта по умолчанию
         self.direction = choice([UP, DOWN, LEFT, RIGHT])
         # Случайное направление движения
-        self.next_direction = None
         screen.fill(BOARD_BACKGROUND_COLOR)  # Стирает тело змейки с экрана
 
 
@@ -153,13 +138,13 @@ def handle_keys(events, snake):
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP and snake.direction != DOWN:
-                snake.next_direction = UP
+                return UP
             elif event.key == pygame.K_DOWN and snake.direction != UP:
-                snake.next_direction = DOWN
+                return DOWN
             elif event.key == pygame.K_LEFT and snake.direction != RIGHT:
-                snake.next_direction = LEFT
+                return LEFT
             elif event.key == pygame.K_RIGHT and snake.direction != LEFT:
-                snake.next_direction = RIGHT
+                return RIGHT
 
 
 def main():
@@ -170,13 +155,13 @@ def main():
 
     while True:  # Основной цикл
         clock.tick(SPEED)
-        handle_keys(pygame.event.get(), snake)
-        snake.move()
+        snake.move(handle_keys(pygame.event.get(), snake))
         if snake.positions[0] == apple.position:
             snake.positions.append(snake.last)
             if len(snake.positions) == GRID_WIDTH * GRID_HEIGHT:
-                # Остановка игры, поздравление с победой
-                pass
+                break
+                # Если змейка занимает все поле,
+                # игра останавливается
             apple.randomize_position(snake.positions)
         if snake.positions[0] in snake.positions[1:]:
             snake.reset()
