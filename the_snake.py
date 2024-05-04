@@ -135,9 +135,11 @@ class Snake(GameObject):
         screen.fill(BOARD_BACKGROUND_COLOR)  # Стирает тело змейки с экрана
 
     def get_head_position(self):
+        """Возвращает координаты головы змейки"""
         return self.positions[0]
 
     def update_direction(self, new_direction):
+        """Меняет направление движения"""
         self.direction = new_direction
 
 
