@@ -66,7 +66,8 @@ class GameObject:
 class Apple(GameObject):
     """Дочерний класс Gameobject.
 
-    Атрибут position определяет позицию объекта и не определен заранее.
+    Атрибуты position и body_color определяют позицию
+    объекта и цвет и не заданы заранее.
     """
 
     def __init__(self):
@@ -90,7 +91,7 @@ class Apple(GameObject):
 class Snake(GameObject):
     """Дочерний класс Gameobject.
 
-    Атрибут last определяет последний сегмент змейки и не определен заранее
+    Атрибут last задает последний сегмент змейки и не определен заранее
     """
 
     direction = RIGHT  # Направление движения
