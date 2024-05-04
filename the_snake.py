@@ -107,10 +107,10 @@ class Snake(GameObject):
 
     def move(self, new_direction=None):
         """Добавляет элемент в начало positions и удаляет элемент в конце."""
-        new_head_x = (self.positions[0][0] + self.direction[0] *
-                      GRID_SIZE) % SCREEN_WIDTH
-        new_head_y = (self.positions[0][1] + self.direction[1] *
-                      GRID_SIZE) % SCREEN_HEIGHT
+        new_head_x = (self.positions[0][0] + self.direction[0]
+                      * GRID_SIZE) % SCREEN_WIDTH
+        new_head_y = (self.positions[0][1] + self.direction[1]
+                      * GRID_SIZE) % SCREEN_HEIGHT
         self.positions.insert(0, (new_head_x, new_head_y))
         # Вычисляет новую позицию головы из текущей и направления движения.
         self.last = self.positions.pop(-1)
