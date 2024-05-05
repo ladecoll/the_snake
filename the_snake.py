@@ -51,7 +51,7 @@ class GameObject:
     определяются в дочерних объектах
     """
 
-    def __init__(self, position, body_color):
+    def __init__(self, position=None, body_color=None):
         """Используется только при инициализации объектов дочерних классов."""
         self.position = position
         self.body_color = body_color
