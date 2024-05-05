@@ -56,7 +56,7 @@ class GameObject:
         self.position = position
         self.body_color = body_color
 
-    def draw(self, position, body_color):
+    def draw_cell(self, position, body_color):
         """Отрисовывает переданный экземпляр дочернего класса."""
         rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(screen, body_color, rect)
@@ -70,13 +70,9 @@ class Apple(GameObject):
     объекта и цвет и не заданы заранее.
     """
 
-    def __init__(self):
-        """Создает объект Apple с случайной позицией и заданным цветом"""
-        super().__init__(self.randomize_position(), APPLE_COLOR)
-
-    def draw_apple(self):
+    def draw(self):
         """Отрисовывет объект Apple."""
-        super().draw(self.position, self.body_color)
+        super().draw_cell(self.position, self.body_color)
 
     def randomize_position(self, positions=None):
         """Генерирует атрибут position"""
@@ -96,12 +92,11 @@ class Snake(GameObject):
     однако оставлены в ходе из-за требований тестов.
     """
 
-    direction = RIGHT  # Направление движения
-    positions = [SNAKE_POSITION]
-    # Cписок позиций сегментов змейки
-
     def __init__(self):
         """Создает объект Snake с заданным цветом"""
+        self.direction = RIGHT  # Направление движения
+        self.positions = [SNAKE_POSITION]
+        # Cписок позиций сегментов змейки
         super().__init__(SNAKE_POSITION, SNAKE_COLOR)
         # Передает позицию и заданный цвет
         # в инициализатор родительского класса
@@ -121,9 +116,9 @@ class Snake(GameObject):
             self.direction = new_direction
         # Задает новое направление движения если оно было введено.
 
-    def draw_snake(self):
+    def draw(self):
         """Рисует голову змейки и стирает кончик хвоста."""
-        super().draw(self.positions[0], SNAKE_COLOR)
+        super().draw_cell(self.positions[0], SNAKE_COLOR)
         pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR,
                          pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE)))
 
@@ -163,7 +158,7 @@ def handle_keys(events, snake):
 def main():
     """Основная функция."""
     pygame.init()
-    apple = Apple()
+    apple = Apple(Apple().randomize_position(), APPLE_COLOR)
     snake = Snake()
 
     while True:  # Основной цикл
@@ -178,8 +173,8 @@ def main():
             apple.randomize_position(snake.positions)
         if snake.positions[0] in snake.positions[1:]:
             snake.reset()
-        snake.draw_snake()
-        apple.draw_apple()
+        snake.draw()
+        apple.draw()
         pygame.display.update()
 
 
