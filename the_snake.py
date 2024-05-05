@@ -51,13 +51,17 @@ class GameObject:
     определяются в дочерних объектах
     """
 
-    def __init__(self, position=None, body_color=None):
+    def __init__(self, position, body_color):
         """Используется только при инициализации объектов дочерних классов."""
         self.position = position
         self.body_color = body_color
 
-    def draw_cell(self, position, body_color):
-        """Отрисовывает переданный экземпляр дочернего класса."""
+    def draw(self, position=None, body_color=None):
+        """Отрисовывает переданный экземпляр дочернего класса.
+
+        Переопределить метод как draw_cell
+        невозможно из-за требований тестов.
+        """
         rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(screen, body_color, rect)
         pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
@@ -72,7 +76,7 @@ class Apple(GameObject):
 
     def draw(self):
         """Отрисовывет объект Apple."""
-        super().draw_cell(self.position, self.body_color)
+        super().draw(self.position, self.body_color)
 
     def randomize_position(self, positions=None):
         """Генерирует атрибут position"""
@@ -92,7 +96,7 @@ class Snake(GameObject):
     однако оставлены в ходе из-за требований тестов.
     """
 
-    def __init__(self, direction, position):
+    def __init__(self, direction=None, position=None):
         """Создает объект Snake с заданным цветом"""
         self.direction = direction  # Направление движения
         self.positions = position
@@ -118,7 +122,7 @@ class Snake(GameObject):
 
     def draw(self):
         """Рисует голову змейки и стирает кончик хвоста."""
-        super().draw_cell(self.positions[0], SNAKE_COLOR)
+        super().draw(self.positions[0], SNAKE_COLOR)
         pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR,
                          pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE)))
 
