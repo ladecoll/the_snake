@@ -92,10 +92,10 @@ class Snake(GameObject):
     однако оставлены в ходе из-за требований тестов.
     """
 
-    def __init__(self):
+    def __init__(self, direction, position):
         """Создает объект Snake с заданным цветом"""
-        self.direction = RIGHT  # Направление движения
-        self.positions = [SNAKE_POSITION]
+        self.direction = direction  # Направление движения
+        self.positions = position
         # Cписок позиций сегментов змейки
         super().__init__(SNAKE_POSITION, SNAKE_COLOR)
         # Передает позицию и заданный цвет
@@ -159,7 +159,7 @@ def main():
     """Основная функция."""
     pygame.init()
     apple = Apple(Apple().randomize_position(), APPLE_COLOR)
-    snake = Snake()
+    snake = Snake(RIGHT, [SNAKE_POSITION])
 
     while True:  # Основной цикл
         clock.tick(SPEED)
